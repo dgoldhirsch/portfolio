@@ -1,16 +1,18 @@
 ## Portfolio of Code
 
-### Android Upper and Lower
+### Android Jetpack Compose Exercise: Upper and Lower
 
 #### Code
+[UpperAndLower](https://github.com/dgoldhirsch/portfolio/tree/master/UpperAndLower)
 
 #### Demo
+![upper-and-lower](https://github.com/user-attachments/assets/60445500-be9f-4601-8b82-e0a671d06471)
 
-
-### Exercise #4: Earth And Moon
+### Android Jetpack Compose Exercise: Earth And Moon
 
 #### Code
 The code is a self-contained Android Studio project in a subdirectory of this github repo:
+[EarthAndMoon](https://github.com/dgoldhirsch/portfolio/tree/master/EarthAndMoon)
 
 #### Acknowledgement
 This code was adapted from a solution by Shreyas Muthkur.  I would not have known even where to start, if I hadn't seen his solution.

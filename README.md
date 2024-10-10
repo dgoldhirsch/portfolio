@@ -1,31 +1,29 @@
 ## Portfolio of Code
 
-### Android Jetpack Compose Exercise: Upper and Lower
+### Simple Jetpack Compose UI Exercises
 
-#### Code
+### Upper and Lower
+
+Maintain the state of two halves of the screen.
 [UpperAndLower](https://github.com/dgoldhirsch/portfolio/tree/master/UpperAndLower)
 
-#### Demo
 ![upper-and-lower](https://github.com/user-attachments/assets/60445500-be9f-4601-8b82-e0a671d06471)
 
 ### Android Jetpack Compose Exercise: Earth And Moon
 
-#### Code
-The code is a self-contained Android Studio project in a subdirectory of this github repo:
+Show an approximation of the Earth orbiting the Sun while the Moon orbits the Earth, using the actual, relative speeds of rotation (the Moon moves about 13 times faster than the Earth does).
+
 [EarthAndMoon](https://github.com/dgoldhirsch/portfolio/tree/master/EarthAndMoon)
 
-#### Acknowledgement
 This code was adapted from a solution by Shreyas Muthkur.  I would not have known even where to start, if I hadn't seen his solution.
 Another interesting approach is taken by Anmol Verma, as described in https://x.com/oianmol/status/1502690796885409796.
-
-#### Demo
 
 The app runs lots faster than the gif (below), the Moon orbiting the Earth about once per second.  The frame rate is 10 milliseconds.
 
 * To top the animation, click anywhere on the screen;  the same, to restart it.
 * If you drag your finger within the Moon's orbit, the legend, "Earth," will appear.
 
-![earth-moon](https://github.com/user-attachments/assets/f0e7463c-b0d5-4e1d-b9e2-2118a43fb7e9)
+![earth-moon](https://github.com/user-attachments/assets/5c7d8a61-3ef3-4626-933f-3d61ab5403cc)
 
 #### Coding Considerations
 There are at least two basically different approaches to animation in Jetpack Compose:

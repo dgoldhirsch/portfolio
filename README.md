@@ -2,30 +2,27 @@
 
 ### Simple Jetpack Compose UI Exercises
 
-### Upper and Lower
+### Bottom Sheet Exercise
 
-Maintain the state of two halves of the screen.
+Create a view with a top and bottom half (each a different color), and a button in each half.The top button brings up a modal that covers the full screen. The bottom button brings up a modal that covers the lower 50% of the screen. Inside this modal there’s a button that toggles the modal between 25% and 50% coverage of the screen.
+
 [UpperAndLower](https://github.com/dgoldhirsch/portfolio/tree/master/UpperAndLower)
 
 ![upper-and-lower](https://github.com/user-attachments/assets/60445500-be9f-4601-8b82-e0a671d06471)
 
-### Android Jetpack Compose Exercise: Earth And Moon
+### Simple Animation Exercise:  Earth and Moon
 
-Show an approximation of the Earth orbiting the Sun while the Moon orbits the Earth, using the actual, relative speeds of rotation (the Moon moves about 13 times faster than the Earth does).
+Show an approximation of the Earth orbiting the Sun while the Moon orbits the Earth, using the actual, relative speeds of rotation (the Moon moves about 13 times faster than the Earth does).  If the user hovers (drags the pointer device) within the orbit of the Earth, show the name, "Earth" nearby.  Stop/start the animation whenever the user clicks the screen.
 
 [EarthAndMoon](https://github.com/dgoldhirsch/portfolio/tree/master/EarthAndMoon)
 
-This code was adapted from a solution by Shreyas Muthkur.  I would not have known even where to start, if I hadn't seen his solution.
-Another interesting approach is taken by Anmol Verma, as described in https://x.com/oianmol/status/1502690796885409796.
-
 The app runs lots faster than the gif (below), the Moon orbiting the Earth about once per second.  The frame rate is 10 milliseconds.
-
-* To top the animation, click anywhere on the screen;  the same, to restart it.
-* If you drag your finger within the Moon's orbit, the legend, "Earth," will appear.
 
 ![earth-moon](https://github.com/user-attachments/assets/5c7d8a61-3ef3-4626-933f-3d61ab5403cc)
 
-#### Coding Considerations
+This code was adapted from a solution by Shreyas Muthkur.  I would not have known even where to start, if I hadn't first seen his solution.
+Another interesting approach is taken by Anmol Verma, as described in https://x.com/oianmol/status/1502690796885409796, animating several planets plus their moons.
+
 There are at least two basically different approaches to animation in Jetpack Compose:
 
 * Use a simple, single frame rate, computing the change of position of all objects per frame.  This is the approach taken here.

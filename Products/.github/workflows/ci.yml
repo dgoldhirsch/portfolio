@@ -1,0 +1,21 @@
+  name: ci
+  on: [push]
+  jobs:
+    buildAndUnitTest:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: set up JDK 21
+          uses: actions/setup-java@v4
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+
+        - name: Grant execute permission for gradlew
+          run: chmod +x gradlew
+
+        - name: Build with Gradle
+          run: ./gradlew --console=rich build
+
+        - run: echo "Android-2024 Finished With Status report=${{ job.status }}"

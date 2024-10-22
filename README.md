@@ -1,5 +1,21 @@
 ## Portfolio of Code
 
+### Sample "Show Products" App
+
+Basic app that scrolls through a list of product-like listings, using Jetpack Compose, Navigation, Hilt, and other 2024-current technologies.
+
+[Products App](https://github.com/dgoldhirsch/portfolio/tree/master/Products)
+
+![Screen Shot 2024-10-11 at 12 25 56 AM](https://github.com/user-attachments/assets/b3d74f59-e809-4783-9409-7ebc23c46985)
+
+Demonstrates basic competence with standard tech components:
+
+* MVVM Compose-with-Navigation Architecture
+* Uni-directional, reactive architecture
+* Hilt
+* Room
+* Mockk/Junit
+
 ### Simple Jetpack Compose UI Exercises
 
 #### Bottom Sheet Exercise
@@ -43,19 +59,3 @@ The relative speed of the Moon's orbit (around the Earth) to the Earth's (around
 
 * The moon completes one orbit in about 1 second.
 * The frame rate is 10 milliseconds.
-
-### Sample App Using 2024 Tech Stack
-
-Basic app that scrolls through a list of product-like listings, using Jetpack Compose and Navigation.
-
-[Products App](https://github.com/dgoldhirsch/portfolio/tree/master/Products)
-
-![Screen Shot 2024-10-11 at 12 25 56 AM](https://github.com/user-attachments/assets/b3d74f59-e809-4783-9409-7ebc23c46985)
-
-Demonstrates basic competence with standard tech components:
-
-* MVVM Compose-with-Navigation Architecture
-* Uni-directional, Reactive Architecture using Finite State Machines
-* Hilt
-* Room
-* Mockk/Junit For Testing

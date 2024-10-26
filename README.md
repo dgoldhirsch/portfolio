@@ -59,3 +59,10 @@ The relative speed of the Moon's orbit (around the Earth) to the Earth's (around
 
 * The moon completes one orbit in about 1 second.
 * The frame rate is 10 milliseconds.
+
+#### Tabs
+Support simple, scrollable, horizontal tabs.
+
+The source code is [here](https://github.com/dgoldhirsch/portfolio/tree/master/Tabs)
+
+![tabs](https://github.com/user-attachments/assets/5781ddcc-937d-4806-ad42-6248f964fb09)

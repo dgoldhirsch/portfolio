@@ -1,6 +1,5 @@
-package com.example.tabs.ui.theme
+package com.cornmuffin.tabs.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

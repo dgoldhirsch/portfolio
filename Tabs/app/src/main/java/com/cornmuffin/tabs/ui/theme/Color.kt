@@ -1,4 +1,4 @@
-package com.example.tabs.ui.theme
+package com.cornmuffin.tabs.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

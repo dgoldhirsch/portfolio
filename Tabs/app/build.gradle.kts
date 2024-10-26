@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tabs"
+    namespace = "com.cornmuffin.tabs"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.tabs"
+        applicationId = "com.cornmuffin.tabs"
         minSdk = 34
         targetSdk = 34
         versionCode = 1

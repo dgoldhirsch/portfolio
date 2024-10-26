@@ -1,4 +1,4 @@
-package com.example.tabs
+package com.cornmuffin.tabs
 
 import org.junit.Test
 

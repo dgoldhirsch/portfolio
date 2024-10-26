@@ -1,4 +1,4 @@
-package com.example.tabs
+package com.cornmuffin.tabs
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import com.example.tabs.ui.theme.TabsTheme
+import com.cornmuffin.tabs.ui.theme.TabsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

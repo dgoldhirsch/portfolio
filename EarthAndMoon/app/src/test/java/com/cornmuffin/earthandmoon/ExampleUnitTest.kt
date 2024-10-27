@@ -1,4 +1,4 @@
-package com.example.eathandmoon
+package com.cornmuffin.earthandmoon
 
 import org.junit.Test
 

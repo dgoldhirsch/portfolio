@@ -1,4 +1,4 @@
-package com.example.eathandmoon.ui.theme
+package com.cornmuffin.earthandmoon.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.eathandmoon"
+    namespace = "com.cornmuffin.earthandmoon"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.eathandmoon"
+        applicationId = "com.cornmuffin.earthandmoon"
         minSdk = 34
         targetSdk = 34
         versionCode = 1

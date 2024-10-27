@@ -1,4 +1,4 @@
-package com.example.eathandmoon
+package com.cornmuffin.earthandmoon
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,7 +30,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.eathandmoon.ui.theme.EathAndMoonTheme
+import com.cornmuffin.earthandmoon.ui.theme.EathAndMoonTheme
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 

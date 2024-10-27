@@ -45,11 +45,6 @@ class FlowTest {
             }
     }
 
-    private suspend fun <T> Flow<T>.flowMerge(other: Flow<T>): Flow<T> = flow {
-        collect { emit(it) }
-        other.collect { emit(it) }
-    }
-
     @Test
     fun simpleFlow() = runTest {
         val flow = flowOf(

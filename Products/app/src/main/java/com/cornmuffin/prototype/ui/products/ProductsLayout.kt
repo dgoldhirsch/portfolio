@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductsLayout() {
     val viewModel = hiltViewModel<ProductsViewModel>()
-    val productsViewModelState by viewModel.stateFlow().collectAsState()
+    val productsViewModelState by viewModel.stateFlow.collectAsState()
     val settings by viewModel.settingsRepository.settings.collectAsState()
 
     CompositionLocalProvider(LocalSettings provides settings) {

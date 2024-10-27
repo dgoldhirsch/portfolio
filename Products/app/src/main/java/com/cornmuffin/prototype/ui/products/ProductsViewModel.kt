@@ -28,7 +28,7 @@ class ProductsViewModel @Inject constructor(
     private val navigator: Navigator,
 ) : CannotGoBack, ViewModel() {
     private val _stateFlow = MutableStateFlow(ProductsViewModelState())
-    internal fun stateFlow(): StateFlow<ProductsViewModelState> = _stateFlow.asStateFlow()
+    internal val stateFlow: StateFlow<ProductsViewModelState> = _stateFlow.asStateFlow()
 
     private val eventQueue = EventQueue<Event>()
 
@@ -46,12 +46,10 @@ class ProductsViewModel @Inject constructor(
     }
 
     private val control: (Event) -> Unit = { event: Event ->
-        println("=> PRODUCTS VIEW MODEL => $event")
-
         if (event is Event.SettingsUninitialized) {
             viewModelScope.launch { getSettings() }
         } else {
-            when (stateFlow().value.state) {
+            when (stateFlow.value.state) {
                 ProductsViewModelState.State.UNINITIALIZED,
                 ProductsViewModelState.State.ERROR -> when (event) {
                     is Event.ProductsUninitialized,

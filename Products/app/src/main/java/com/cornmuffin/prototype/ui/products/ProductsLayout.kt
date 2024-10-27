@@ -150,7 +150,9 @@ fun Products(
         }
 
         Button(
-            onClick = { viewModel.enqueue(ProductsViewModel.Event.NavigateTo(Navigator.NavTarget.Settings)) }
+            onClick = {
+                viewModel.enqueue(ProductsViewModel.Event.NavigateTo(Navigator.NavTarget.Settings))
+            }
         ) {
             Text("Settings...")
         }

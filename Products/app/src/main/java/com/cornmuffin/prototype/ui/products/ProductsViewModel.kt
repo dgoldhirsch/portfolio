@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -27,16 +26,19 @@ class ProductsViewModel @Inject constructor(
     val settingsRepository: SettingsRepository,
     private val navigator: Navigator,
 ) : CannotGoBack, ViewModel() {
+    private val eventQueue = EventQueue<Event>()
     private val _stateFlow = MutableStateFlow(ProductsViewModelState())
     internal val stateFlow: StateFlow<ProductsViewModelState> = _stateFlow.asStateFlow()
 
-    private val eventQueue = EventQueue<Event>()
+    interface HasProductResponse {
+        val productsResponse: ProductsResponse
+    }
 
     sealed interface Event : EventQueue.Item {
         data class NavigateTo(val navTarget: Navigator.NavTarget) : Event
         data object ProductsUninitialized : Event
-        data class ReceivedProducts(val productsResponse: ProductsResponse) : Event
-        data class ReceivedRefreshedProducts(val productsResponse: ProductsResponse) : Event
+        data class LoadFinished(override val productsResponse: ProductsResponse) : Event, HasProductResponse
+        data class RefreshFinished(override val productsResponse: ProductsResponse) : Event, HasProductResponse
         data object RefreshProducts : Event
         data object RetryProducts : Event
 
@@ -45,81 +47,9 @@ class ProductsViewModel @Inject constructor(
         }
     }
 
-    private val control: (Event) -> Unit = { event: Event ->
-        if (event is Event.SettingsUninitialized) {
-            viewModelScope.launch { getSettings() }
-        } else {
-            when (stateFlow.value.state) {
-                ProductsViewModelState.State.UNINITIALIZED,
-                ProductsViewModelState.State.ERROR -> when (event) {
-                    is Event.ProductsUninitialized,
-                    is Event.RetryProducts -> {
-                        reduceToLoading()
-                        viewModelScope.launch { enqueue(Event.ReceivedProducts(getProducts())) }
-                    }
-
-                    else -> ignore()
-                }
-
-                ProductsViewModelState.State.LOADING -> when (event) {
-                    is Event.ReceivedProducts -> {
-                        when (event.productsResponse) {
-                            is ProductsResponse.Error -> {
-                                reduceToError(event.productsResponse.exception.message ?: "Bummer")
-                            }
-
-                            is ProductsResponse.Success -> {
-                                reduceToSuccess(event.productsResponse.data)
-                            }
-
-                            else -> ignore()
-                        }
-                    }
-
-                    else -> ignore()
-                }
-
-                ProductsViewModelState.State.SUCCESSFUL -> when (event) {
-                    is Event.RefreshProducts -> {
-                        reduceToRefreshing()
-                        viewModelScope.launch { refresh() }
-                    }
-
-                    is Event.NavigateTo -> {
-                        navigator.navigateTo(event.navTarget)
-                    }
-
-                    else -> ignore()
-                }
-
-                ProductsViewModelState.State.REFRESHING -> when (event) {
-                    is Event.ReceivedRefreshedProducts -> {
-                        when (event.productsResponse) {
-                            is ProductsResponse.Error -> {
-                                reduceToError(event.productsResponse.exception.message ?: "Bummer")
-                            }
-
-                            is ProductsResponse.Success -> {
-                                reduceToSuccess(event.productsResponse.data)
-                            }
-
-                            else -> ignore()
-                        }
-                    }
-
-                    else -> ignore()
-                }
-            }
-        }
-    }
-
     init {
-        println("=> INIT")
-        viewModelScope.launch(Dispatchers.Default) {
-            eventQueue
-                .flow
-                .filterNotNull()
-                .collect { control(it) }
+        viewModelScope.launch {
+            eventQueue.nextEvent.collect { control(it) }
         }
 
         viewModelScope.launch(Dispatchers.Default) {
@@ -133,11 +63,41 @@ class ProductsViewModel @Inject constructor(
      * Public interface so that Layout can prod our state with an event.
      */
     fun enqueue(event: Event) {
-        eventQueue.add(event)
+        viewModelScope.launch(Dispatchers.Default) {
+            eventQueue.add(event)
+        }
     }
 
-    private fun ignore() {
-        println("=> (ignored)")
+    private val control: (Event) -> Unit = { event: Event ->
+        when (event) {
+            is Event.SettingsUninitialized -> viewModelScope.launch { getSettings() }
+            is Event.ProductsUninitialized, is Event.RetryProducts -> retryProducts()
+            is Event.LoadFinished -> reduceBasedOnResponse(event)
+            is Event.RefreshProducts -> refreshProducts()
+            is Event.NavigateTo -> navigator.navigateTo(event.navTarget)
+            is Event.RefreshFinished -> reduceBasedOnResponse(event)
+        }
+    }
+
+    private suspend fun getProducts() = try {
+        withContext(Dispatchers.IO) { repository.getProducts() }
+    } catch (e: Exception) {
+        ProductsResponse.Error(e)
+    }
+
+    private suspend fun getSettings() {
+        withContext(Dispatchers.IO) { settingsRepository.initialize() }
+    }
+
+    private fun reduceBasedOnResponse(event: HasProductResponse) {
+        when (val response = event.productsResponse) {
+            is ProductsResponse.Error -> reduceToError(response.exception.message ?: "Bummer")
+            is ProductsResponse.Success -> reduceToSuccess(response.data)
+        }
+    }
+    private fun refreshProducts() {
+        reduceToRefreshing()
+        viewModelScope.launch { refresh() }
     }
 
     private fun reduceToError(message: String) {
@@ -156,20 +116,15 @@ class ProductsViewModel @Inject constructor(
         _stateFlow.value = _stateFlow.value.asSuccess(products)
     }
 
-    private suspend fun getProducts() = try {
-        withContext(Dispatchers.IO) { repository.getProducts() }
-    } catch (e: Exception) {
-        ProductsResponse.Error(e)
-    }
-
-    private suspend fun getSettings() {
-        withContext(Dispatchers.IO) { settingsRepository.initialize() }
-    }
-
     private suspend fun refresh() {
         withContext(Dispatchers.IO) {
             repository.flushCache()
-            eventQueue.add(Event.ReceivedRefreshedProducts(getProducts()))
+            eventQueue.add(Event.RefreshFinished(getProducts()))
         }
+    }
+
+    private fun retryProducts() {
+        reduceToLoading()
+        viewModelScope.launch { enqueue(Event.LoadFinished(getProducts())) }
     }
 }

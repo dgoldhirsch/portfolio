@@ -1,17 +1,15 @@
 package com.cornmuffin.prototype.util.eventprocessor
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 data class EventQueue<E : EventQueue.Item>(
     private val queue: ArrayDeque<E> = ArrayDeque()
 ) {
-    private val _flow = MutableStateFlow<E?>(null)
-    val flow = _flow.asStateFlow()
+    val nextEvent = MutableSharedFlow<E>()
 
-    fun add(event: E) {
+    suspend fun add(event: E) {
         addToQueue(event)
-        _flow.tryEmit(queue.removeFirstOrNull())
+        queue.removeFirstOrNull()?.let { nextEvent.emit(it) }
     }
 
     @Synchronized
@@ -31,7 +29,6 @@ data class EventQueue<E : EventQueue.Item>(
 
         if (existingIndex >= 0) {
             // Replace existing event of this type with newer one
-            println("=> REPLACE $event")
             queue[existingIndex] = event
         } else if (event.isTopPriority()) {
             // A top-priority event will be the next one to be popped

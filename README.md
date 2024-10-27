@@ -1,5 +1,7 @@
 ## Portfolio of Code
 
+This is a collection of Android projects demonstrating basic competence with the technology stack along with my way of coding.
+
 ### Sample "Show Products" App
 
 Basic app that scrolls through a list of product-like listings, using Jetpack Compose, Navigation, Hilt, and other 2024-current technologies.

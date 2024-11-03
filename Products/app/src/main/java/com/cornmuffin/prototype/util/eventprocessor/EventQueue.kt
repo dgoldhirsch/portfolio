@@ -1,15 +1,17 @@
 package com.cornmuffin.prototype.util.eventprocessor
 
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 data class EventQueue<E : EventQueue.Item>(
     private val queue: ArrayDeque<E> = ArrayDeque()
 ) {
-    val nextEvent = MutableSharedFlow<E>()
+    private val _nextEvent = MutableSharedFlow<E>()
+    val nextEvent = _nextEvent.asSharedFlow()
 
     suspend fun add(event: E) {
         addToQueue(event)
-        queue.removeFirstOrNull()?.let { nextEvent.emit(it) }
+        queue.removeFirstOrNull()?.let { _nextEvent.emit(it) }
     }
 
     @Synchronized

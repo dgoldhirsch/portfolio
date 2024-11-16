@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -18,12 +19,23 @@ class MainViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            nextEvent.collect {
+            advance() // emit initial value of shared flow
+
+            nextEvent
+                .filterNotNull() // probably unnecessary, but protects [control]
+                .collect {
                 control(it)
             }
         }
     }
 
+    private fun advance() {
+        eventQueue.removeFirstOrNull()?.also {
+            viewModelScope.launch {
+                _nextEvent.emit(it)
+            }
+        }
+    }
 
     fun enqueue(event: MainEvent) {
         val existingIndex = eventQueue.indexOfFirst { it::class == event::class }
@@ -34,6 +46,8 @@ class MainViewModel : ViewModel() {
         } else {
             eventQueue.addLast(event)
         }
+
+        advance()
     }
 
     private val control: (MainEvent) -> Unit = { event: MainEvent ->

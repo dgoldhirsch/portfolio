@@ -20,8 +20,6 @@ import androidx.compose.material.icons.materialPath
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import com.cornmuffin.fab.ui.theme.FabTheme
 
 class MainActivity : ComponentActivity() {
@@ -59,6 +58,7 @@ class MainActivity : ComponentActivity() {
 
     private var _minus: ImageVector? = null
 
+    @OptIn(ExperimentalStdlibApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,8 +71,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
                         when (mainState.value) {
-                            MainState.PRIMARY -> Secondary(minus)
-                            MainState.SECONDARY -> Secondary(minus)
+                            MainState.PRIMARY -> PrimaryButton(onClick = { viewModel.enqueue(MainEvent.BecomeSecondary) })
+                            MainState.SECONDARY -> SecondaryButtonList(
+                                minus,
+                                onClick = { viewModel.enqueue(MainEvent.BecomePrimary) }
+                            )
                         }
                     },
 
@@ -84,7 +87,7 @@ class MainActivity : ComponentActivity() {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .background(color = Color(alpha = 0.5f, red = 1f, green = 0.9f, blue = 0.6f))
+                            .background(color = colorResource(R.color.content_background))
                             .padding(paddingValues)
                             .fillMaxSize()
                     ) {
@@ -97,31 +100,29 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun Primary() {
+private fun PrimaryButton(onClick: () -> Unit = {}) {
     FloatingActionButton(
-        onClick = { },
+        onClick = onClick,
         shape = CircleShape,
-        modifier = Modifier
+        containerColor = colorResource(R.color.primary_button),
     ) {
-        Icon(Icons.Filled.Add, "Floating action button")
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Primary button",
+            modifier = Modifier.background(color = colorResource(R.color.primary_button)),
+        )
     }
 }
 
 @Composable
-private fun Secondary(minus: ImageVector) {
+private fun SecondaryButtonList(minus: ImageVector, onClick: () -> Unit = {}) {
     Column(horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column {
                 Text(text = "Atom")
             }
             Column {
-                SmallFloatingActionButton(
-                    onClick = { },
-                    shape = CircleShape,
-                    modifier = Modifier
-                ) {
-                    Icon(minus, "Atom")
-                }
+                SecondaryButton(contentDescription = "Atom", imageVector = minus, onClick = onClick)
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -129,14 +130,23 @@ private fun Secondary(minus: ImageVector) {
                 Text(text = "Blaster")
             }
             Column {
-                SmallFloatingActionButton(
-                    onClick = { },
-                    shape = CircleShape,
-                    modifier = Modifier
-                ) {
-                    Icon(minus, "Blaster")
-                }
+                SecondaryButton(contentDescription = "Blaster", imageVector = minus, onClick = onClick)
             }
         }
+    }
+}
+
+@Composable
+private fun SecondaryButton(contentDescription: String, imageVector: ImageVector, onClick: () -> Unit = {}) {
+    SmallFloatingActionButton(
+        onClick = onClick,
+        shape = CircleShape,
+        containerColor = colorResource(R.color.secondary_button),
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = contentDescription,
+            modifier = Modifier.background(color = colorResource(R.color.secondary_button))
+        )
     }
 }

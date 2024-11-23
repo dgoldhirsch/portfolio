@@ -26,7 +26,7 @@ Create a view with a floating action button.  Clicking on the button hides the b
 
 [Fab](https://github.com/dgoldhirsch/portfolio/tree/master/fab)
 
-![fab](https://github.com/user-attachments/assets/e1ecd9e6-146e-4b52-9d96-e28868b00d66)
+![fab](https://github.com/user-attachments/assets/50257f4d-98a1-4ac5-8b6c-c0e097130f6d)
 
 #### Bottom Sheet Exercise
 

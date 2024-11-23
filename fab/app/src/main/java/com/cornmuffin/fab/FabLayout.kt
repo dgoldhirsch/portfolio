@@ -27,18 +27,16 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,6 +55,8 @@ private var rawMinus: ImageVector = materialIcon(name = "Filled.Remove") {
         close()
     }
 }
+
+private const val DELAY_MILLIS = 333
 
 val LocalMinus = staticCompositionLocalOf { rawMinus }
 
@@ -93,12 +93,12 @@ fun ButtonsBasedOnState(state: FabState) {
     ) {
         AnimatedVisibility(
             visible = state == FabState.SECONDARY,
-            enter = fadeIn(animationSpec = tween(durationMillis = 1000)) +
+            enter = fadeIn(animationSpec = tween(durationMillis = DELAY_MILLIS)) +
                     slideInVertically(
-                        animationSpec = tween(durationMillis = 1000),
+                        animationSpec = tween(durationMillis = DELAY_MILLIS),
                         initialOffsetY = { it / 2 }
                     ),
-            exit = fadeOut(animationSpec = tween(durationMillis = 1000)) +
+            exit = fadeOut(animationSpec = tween(durationMillis = DELAY_MILLIS)) +
                     slideOutVertically(
                         animationSpec = tween(durationMillis = 500),
                         targetOffsetY = { it / 2 }
@@ -120,7 +120,7 @@ private fun PrimaryButton() {
 
     val alpha: Float by animateFloatAsState(
         targetValue = if (state.value == FabState.PRIMARY) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = DELAY_MILLIS),
         label = "PrimaryButton alpha animation",
     )
 

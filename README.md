@@ -20,6 +20,14 @@ Demonstrates basic competence with standard tech components:
 
 ### Simple Jetpack Compose UI Exercises
 
+#### Floating Action Button Exercise
+
+Create a view with a floating action button.  Clicking on the button hides the button and shows two different, floating action buttons stacked vertically and each with some aligned text.  Clicking on either of the two buttons restores the original view.  Animation slides the secondary buttons upwards and downwards, and both the original and secondary buttons fade in and out.
+
+[Fab](https://github.com/dgoldhirsch/portfolio/tree/master/fab)
+
+![fab](https://github.com/user-attachments/assets/e1ecd9e6-146e-4b52-9d96-e28868b00d66)
+
 #### Bottom Sheet Exercise
 
 Create a view with a top and bottom half (each a different color), and a button in each half.The top button brings up a modal that covers the full screen. The bottom button brings up a modal that covers the lower 50% of the screen. Inside this modal there’s a button that toggles the modal between 25% and 50% coverage of the screen.

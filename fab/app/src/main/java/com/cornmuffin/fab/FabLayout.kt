@@ -27,7 +27,7 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
@@ -57,7 +57,7 @@ val LocalMinus = staticCompositionLocalOf { rawMinus }
 
 @Composable
 fun FabLayout() {
-    val mainState by viewModel<FabViewModel>().stateFlow.collectAsState()
+    val mainState by viewModel<FabViewModel>().stateFlow.collectAsStateWithLifecycle()
 
     CompositionLocalProvider(LocalMinus provides rawMinus) {
         Scaffold(

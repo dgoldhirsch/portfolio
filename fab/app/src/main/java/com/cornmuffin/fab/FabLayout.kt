@@ -33,11 +33,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 // There's no default "minus" image vector in the standard Material library.
@@ -61,7 +64,9 @@ val LocalMinus = staticCompositionLocalOf { rawMinus }
 fun FabLayout() {
     val mainState by viewModel<FabViewModel>().stateFlow.collectAsStateWithLifecycle()
 
-    CompositionLocalProvider(LocalMinus provides rawMinus) {
+    CompositionLocalProvider(
+        LocalMinus provides rawMinus,
+    ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = { ButtonsBasedOnState(mainState) },
@@ -74,7 +79,7 @@ fun FabLayout() {
                     .padding(paddingValues)
                     .fillMaxSize()
             ) {
-                Text("Content goes here")
+                Text(text = "Content goes here", color = colorResource(R.color.text))
             }
         }
     }
@@ -82,12 +87,6 @@ fun FabLayout() {
 
 @Composable
 fun ButtonsBasedOnState(state: FabState) {
-    val primaryAlpha: Float by animateFloatAsState(
-        targetValue = if (state == FabState.PRIMARY) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
-        label = "PrimaryButton alpha animation",
-    )
-
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.End, // crucial, else primary button slides to the left when clicked
@@ -95,27 +94,38 @@ fun ButtonsBasedOnState(state: FabState) {
         AnimatedVisibility(
             visible = state == FabState.SECONDARY,
             enter = fadeIn(animationSpec = tween(durationMillis = 1000)) +
-                    slideInVertically(animationSpec = tween(durationMillis = 1000)),
+                    slideInVertically(
+                        animationSpec = tween(durationMillis = 1000),
+                        initialOffsetY = { it / 2 }
+                    ),
             exit = fadeOut(animationSpec = tween(durationMillis = 1000)) +
-                    slideOutVertically(animationSpec = tween(durationMillis = 1000)),
+                    slideOutVertically(
+                        animationSpec = tween(durationMillis = 500),
+                        targetOffsetY = { it / 2 }
+                    ),
             label = "Secondary button list visibility animation",
         ) {
             SecondaryButtonList()
         }
 
-        // Can't use visibility animation, because we want secondaries to appear above its place in the column.
-        // Instead, animate content.
-        PrimaryButton(alpha = primaryAlpha)
+        PrimaryButton()
     }
 }
 
 @Composable
-private fun PrimaryButton(alpha: Float) {
+private fun PrimaryButton() {
     val viewModel = viewModel<FabViewModel>()
+    val state = viewModel.stateFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
+    val alpha: Float by animateFloatAsState(
+        targetValue = if (state.value == FabState.PRIMARY) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000),
+        label = "PrimaryButton alpha animation",
+    )
+
     FloatingActionButton(
-        onClick = { scope.launch { viewModel.reduce(FabEvent.BecomeSecondary) } },
+        onClick = { scope.launch(Dispatchers.Default) { viewModel.reduce(FabEvent.BecomeSecondary) } },
         shape = CircleShape,
         containerColor = colorResource(R.color.primary_button),
         modifier = Modifier.graphicsLayer(alpha = alpha)
@@ -133,7 +143,7 @@ private fun SecondaryButton(contentDescription: String, imageVector: ImageVector
     val scope = rememberCoroutineScope()
 
     SmallFloatingActionButton(
-        onClick = { scope.launch { viewModel.reduce(FabEvent.BecomePrimary) } },
+        onClick = { scope.launch(Dispatchers.Default) { viewModel.reduce(FabEvent.BecomePrimary) } },
         shape = CircleShape,
         containerColor = colorResource(R.color.secondary_button),
     ) {
@@ -149,7 +159,7 @@ private fun SecondaryButtonList() {
     Column(horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column {
-                Text(text = "Atom")
+                Text(text = "Atom", color = colorResource(R.color.text))
             }
             Column {
                 SecondaryButton(contentDescription = "Atom", imageVector = LocalMinus.current)
@@ -157,7 +167,7 @@ private fun SecondaryButtonList() {
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column {
-                Text(text = "Blaster")
+                Text(text = "Blaster", color = colorResource(R.color.text))
             }
             Column {
                 SecondaryButton(contentDescription = "Blaster", imageVector = LocalMinus.current)

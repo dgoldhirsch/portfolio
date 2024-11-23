@@ -1,6 +1,6 @@
 package com.cornmuffin.fab
 
-enum class MainState {
+enum class FabState {
     PRIMARY,
     SECONDARY,
 }

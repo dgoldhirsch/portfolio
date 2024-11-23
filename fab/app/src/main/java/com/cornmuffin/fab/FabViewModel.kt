@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
-    private val _stateFlow = MutableStateFlow(MainState.PRIMARY)
-    internal val stateFlow: StateFlow<MainState> = _stateFlow.asStateFlow()
-    private val eventQueue: ArrayDeque<MainEvent> = ArrayDeque()
-    private val _nextEvent: MutableSharedFlow<MainEvent> = MutableSharedFlow()
+class FabViewModel : ViewModel() {
+    private val _stateFlow = MutableStateFlow(FabState.PRIMARY)
+    internal val stateFlow: StateFlow<FabState> = _stateFlow.asStateFlow()
+    private val eventQueue: ArrayDeque<FabEvent> = ArrayDeque()
+    private val _nextEvent: MutableSharedFlow<FabEvent> = MutableSharedFlow()
     private val nextEvent = _nextEvent.asSharedFlow()
 
     init {
@@ -37,7 +37,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun enqueue(event: MainEvent) {
+    fun enqueue(event: FabEvent) {
         val existingIndex = eventQueue.indexOfFirst { it::class == event::class }
 
         if (existingIndex >= 0) {
@@ -50,18 +50,18 @@ class MainViewModel : ViewModel() {
         advance()
     }
 
-    private val control: (MainEvent) -> Unit = { event: MainEvent ->
+    private val control: (FabEvent) -> Unit = { event: FabEvent ->
         when (event) {
-            is MainEvent.BecomePrimary -> becomePrimary()
-            is MainEvent.BecomeSecondary -> becomeSecondary()
+            is FabEvent.BecomePrimary -> becomePrimary()
+            is FabEvent.BecomeSecondary -> becomeSecondary()
         }
     }
 
     private fun becomePrimary() {
-        _stateFlow.value = MainState.PRIMARY
+        _stateFlow.value = FabState.PRIMARY
     }
 
     private fun becomeSecondary() {
-        _stateFlow.value = MainState.SECONDARY
+        _stateFlow.value = FabState.SECONDARY
     }
 }

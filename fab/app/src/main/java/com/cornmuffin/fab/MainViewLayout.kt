@@ -1,10 +1,14 @@
 package com.cornmuffin.fab
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +27,13 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 // Copied this from Icons.Default.Remove, after bringing in the extended Material icon library,
@@ -35,10 +42,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 // Learned about this from https://developer.android.com/reference/kotlin/androidx/compose/material/icons/package-summary
 private val minus: ImageVector
     get() {
-        if (_minus != null) {
-            return _minus!!
+        if (rawMinus != null) {
+            return rawMinus!!
         }
-        _minus = materialIcon(name = "Filled.Remove") {
+        rawMinus = materialIcon(name = "Filled.Remove") {
             materialPath {
                 moveTo(19.0f, 13.0f)
                 horizontalLineTo(5.0f)
@@ -48,31 +55,19 @@ private val minus: ImageVector
                 close()
             }
         }
-        return _minus!!
+        return rawMinus!!
     }
 
-private var _minus: ImageVector? = null
+private var rawMinus: ImageVector? = null
 
 @Composable
 fun FabLayout() {
     val viewModel = viewModel<MainViewModel>()
-    val mainState = viewModel.stateFlow.collectAsState()
+    val mainState by viewModel.stateFlow.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            when (mainState.value) {
-                MainState.PRIMARY -> PrimaryButton(onClick = { viewModel.enqueue(MainEvent.BecomeSecondary) })
-                MainState.SECONDARY -> SecondaryButtonList(
-                    minus,
-                    onClick = { viewModel.enqueue(MainEvent.BecomePrimary) }
-                )
-            }
-        },
-
-        // This is the only way, so far, I've been able to keep the FABs
-        // at the bottom, right-hand corner while adding background
-        // content in the middle of the screen.
+        floatingActionButton = { ButtonsBasedOnState(mainState) },
         floatingActionButtonPosition = FabPosition.End,
     ) { paddingValues ->
         Box(
@@ -88,29 +83,57 @@ fun FabLayout() {
 }
 
 @Composable
-private fun PrimaryButton(onClick: () -> Unit = {}) {
+fun ButtonsBasedOnState(state: MainState) {
+    val primaryAlpha: Float by animateFloatAsState(
+        targetValue = if (state == MainState.PRIMARY) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000),
+        label = "PrimaryButton Alpha Animation",
+    )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(100.dp),
+        horizontalAlignment = Alignment.End,
+    ) {
+        AnimatedVisibility(
+            visible = state == MainState.SECONDARY,
+            enter = fadeIn(animationSpec = tween(durationMillis = 1000)) +
+                    slideInVertically(animationSpec = tween(durationMillis = 1000)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 1000)) +
+                    slideOutVertically(animationSpec = tween(durationMillis = 1000)),
+        ) {
+            SecondaryButtonList(minus = minus)
+        }
+
+        PrimaryButton(alpha = primaryAlpha)
+    }
+}
+
+@Composable
+private fun PrimaryButton(alpha: Float) {
+    val viewModel = viewModel<MainViewModel>()
+
     FloatingActionButton(
-        onClick = onClick,
+        onClick = { viewModel.enqueue(MainEvent.BecomeSecondary) },
         shape = CircleShape,
         containerColor = colorResource(R.color.primary_button),
+        modifier = Modifier.graphicsLayer(alpha = alpha)
     ) {
         Icon(
             imageVector = Icons.Filled.Add,
             contentDescription = "Primary button",
-            modifier = Modifier.background(color = colorResource(R.color.primary_button)),
         )
     }
 }
 
 @Composable
-private fun SecondaryButtonList(minus: ImageVector, onClick: () -> Unit = {}) {
+private fun SecondaryButtonList(minus: ImageVector) {
     Column(horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column {
                 Text(text = "Atom")
             }
             Column {
-                SecondaryButton(contentDescription = "Atom", imageVector = minus, onClick = onClick)
+                SecondaryButton(contentDescription = "Atom", imageVector = minus)
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -118,16 +141,18 @@ private fun SecondaryButtonList(minus: ImageVector, onClick: () -> Unit = {}) {
                 Text(text = "Blaster")
             }
             Column {
-                SecondaryButton(contentDescription = "Blaster", imageVector = minus, onClick = onClick)
+                SecondaryButton(contentDescription = "Blaster", imageVector = minus)
             }
         }
     }
 }
 
 @Composable
-private fun SecondaryButton(contentDescription: String, imageVector: ImageVector, onClick: () -> Unit = {}) {
+private fun SecondaryButton(contentDescription: String, imageVector: ImageVector) {
+    val viewModel = viewModel<MainViewModel>()
+
     SmallFloatingActionButton(
-        onClick = onClick,
+        onClick = { viewModel.enqueue(MainEvent.BecomePrimary) },
         shape = CircleShape,
         containerColor = colorResource(R.color.secondary_button),
     ) {

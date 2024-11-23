@@ -19,7 +19,7 @@ class FabViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            advance() // emit initial value of shared flow
+            advance() // emit initial value of queue
 
             nextEvent
                 .filterNotNull() // probably unnecessary, but protects [control]
@@ -37,16 +37,14 @@ class FabViewModel : ViewModel() {
         }
     }
 
+    /**
+     * A debounced queue containing at most one of each type of event.
+     * If a new instance of an event type is enqueued while another one is
+     * already in the queue, the new one is ignored.
+     */
+    @Synchronized
     fun enqueue(event: FabEvent) {
-        val existingIndex = eventQueue.indexOfFirst { it::class == event::class }
-
-        if (existingIndex >= 0) {
-            // Replace queued event with new one of this type
-            eventQueue[existingIndex] = event
-        } else {
-            eventQueue.addLast(event)
-        }
-
+        eventQueue.firstOrNull { it::class == event::class } ?: eventQueue.addLast(event)
         advance()
     }
 

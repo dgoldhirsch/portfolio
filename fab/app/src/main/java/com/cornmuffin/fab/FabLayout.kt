@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 
 // There's no default "minus" image vector in the standard Material library.
 // We got this code by adding implementation("androidx.compose.material:material-icons-extended")
@@ -110,9 +112,10 @@ fun ButtonsBasedOnState(state: FabState) {
 @Composable
 private fun PrimaryButton(alpha: Float) {
     val viewModel = viewModel<FabViewModel>()
+    val scope = rememberCoroutineScope()
 
     FloatingActionButton(
-        onClick = { viewModel.enqueue(FabEvent.BecomeSecondary) },
+        onClick = { scope.launch { viewModel.reduce(FabEvent.BecomeSecondary) } },
         shape = CircleShape,
         containerColor = colorResource(R.color.primary_button),
         modifier = Modifier.graphicsLayer(alpha = alpha)
@@ -127,9 +130,10 @@ private fun PrimaryButton(alpha: Float) {
 @Composable
 private fun SecondaryButton(contentDescription: String, imageVector: ImageVector) {
     val viewModel = viewModel<FabViewModel>()
+    val scope = rememberCoroutineScope()
 
     SmallFloatingActionButton(
-        onClick = { viewModel.enqueue(FabEvent.BecomePrimary) },
+        onClick = { scope.launch { viewModel.reduce(FabEvent.BecomePrimary) } },
         shape = CircleShape,
         containerColor = colorResource(R.color.secondary_button),
     ) {

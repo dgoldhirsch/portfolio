@@ -20,11 +20,11 @@ ksp {
 }
 
 android {
-    namespace = "com.cornmuffin.prototype"
+    namespace = "com.cornmuffin.products"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.cornmuffin.prototype"
+        applicationId = "com.cornmuffin.products"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

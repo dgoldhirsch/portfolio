@@ -34,7 +34,7 @@ Create a view with a top and bottom half (each a different color), and a button 
 
 ![upper-and-lower](https://github.com/user-attachments/assets/60445500-be9f-4601-8b82-e0a671d06471)
 
-### Tabs
+### Tabs Exercise
 Support simple, scrollable, horizontal tab bar, including a custom icon and some basic animation.
 
 [Tabs](https://github.com/dgoldhirsch/portfolio/tree/master/Tabs)

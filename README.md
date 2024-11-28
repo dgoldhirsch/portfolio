@@ -22,7 +22,7 @@ Demonstrates basic competence with standard tech components:
 
 Create a view with a floating action button.  Clicking on the button hides the button and shows two different, floating action buttons stacked vertically and each with some aligned text.  Clicking on either of the two buttons restores the original view.  Animation slides the secondary buttons upwards and downwards, and both the original and secondary buttons fade in and out.
 
-[Fab](https://github.com/dgoldhirsch/portfolio/tree/master/fab)
+[Fab](https://github.com/dgoldhirsch/portfolio/tree/master/Fab)
 
 ![fab](https://github.com/dgoldhirsch/portfolio/blob/master/fab/fab-better-loop.gif)
 
